@@ -20,7 +20,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Device, useUpdateDevice } from "@/hooks/useDevices";
+import { usePlatforms } from "@/hooks/usePlatforms";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { toast } from "sonner";
 
@@ -30,6 +38,7 @@ const deviceSchema = z.object({
   os: z.string().min(1, "OS is required").max(100),
   image_url: z.string().optional(),
   download_url: z.string().optional(),
+  platform_id: z.string().optional(),
 });
 
 type DeviceFormData = z.infer<typeof deviceSchema>;
@@ -50,6 +59,7 @@ const EditDeviceDialog = ({ device }: EditDeviceDialogProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const updateDevice = useUpdateDevice();
+  const { data: platforms } = usePlatforms();
   const { uploadFile, isUploading } = useFileUpload();
 
   const form = useForm<DeviceFormData>({
@@ -60,6 +70,7 @@ const EditDeviceDialog = ({ device }: EditDeviceDialogProps) => {
       os: device.os,
       image_url: device.image_url || "",
       download_url: device.download_url || "",
+      platform_id: device.platform_id || "",
     },
   });
 
@@ -71,6 +82,7 @@ const EditDeviceDialog = ({ device }: EditDeviceDialogProps) => {
         os: device.os,
         image_url: device.image_url || "",
         download_url: device.download_url || "",
+        platform_id: device.platform_id || "",
       });
       setSoftwareVersions(
         device.software_versions.length > 0
@@ -130,6 +142,7 @@ const EditDeviceDialog = ({ device }: EditDeviceDialogProps) => {
           os: data.os,
           image_url: data.image_url || undefined,
           download_url: data.download_url || undefined,
+          platform_id: data.platform_id || undefined,
         },
         softwareVersions: validVersions,
       });
@@ -195,6 +208,31 @@ const EditDeviceDialog = ({ device }: EditDeviceDialogProps) => {
                   <FormControl>
                     <Input placeholder="e.g. Android 11" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="platform_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Platform</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a platform" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {platforms?.map((platform) => (
+                        <SelectItem key={platform.id} value={platform.id}>
+                          {platform.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
