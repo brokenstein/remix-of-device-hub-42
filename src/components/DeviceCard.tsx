@@ -1,5 +1,5 @@
-import { Monitor, Cpu, Trash2, Download } from "lucide-react";
-import { Device, useDeleteDevice } from "@/hooks/useDevices";
+import { Monitor, Cpu, Trash2, Download, Copy } from "lucide-react";
+import { Device, useDeleteDevice, useAddDevice } from "@/hooks/useDevices";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ interface DeviceCardProps {
 
 const DeviceCard = ({ device }: DeviceCardProps) => {
   const deleteDevice = useDeleteDevice();
+  const addDevice = useAddDevice();
   const { isAdmin } = useAuth();
 
   const handleDelete = async () => {
@@ -21,6 +22,28 @@ const DeviceCard = ({ device }: DeviceCardProps) => {
       } catch {
         toast.error("Failed to delete device");
       }
+    }
+  };
+
+  const handleDuplicate = async () => {
+    try {
+      await addDevice.mutateAsync({
+        device: {
+          name: `${device.name} (Copy)`,
+          model: device.model,
+          os: device.os,
+          image_url: device.image_url || undefined,
+          download_url: device.download_url || undefined,
+          platform_id: device.platform_id || undefined,
+        },
+        softwareVersions: device.software_versions.map((sv) => ({
+          name: sv.name,
+          version: sv.version,
+        })),
+      });
+      toast.success("Device duplicated");
+    } catch {
+      toast.error("Failed to duplicate device");
     }
   };
 
@@ -39,6 +62,15 @@ const DeviceCard = ({ device }: DeviceCardProps) => {
         )}
         {isAdmin && (
           <div className="absolute top-2 right-2 flex gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-primary hover:bg-primary/10"
+              onClick={handleDuplicate}
+              disabled={addDevice.isPending}
+            >
+              <Copy className="w-4 h-4" />
+            </Button>
             <EditDeviceDialog device={device} />
             <Button
               variant="ghost"
