@@ -46,12 +46,12 @@ const Header = () => {
             {/* Show Add Device and User Management only for admins */}
             {isAdmin && (
               <>
-                <Link to="/admin/users">
-                  <Button variant="outline" size="sm">
+                <Button variant="brightsign" size="sm" asChild>
+                  <Link to="/admin/users">
                     <Users className="w-4 h-4 mr-1" />
                     <span className="hidden sm:inline">Users</span>
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 <AddDeviceDialog />
               </>
             )}
