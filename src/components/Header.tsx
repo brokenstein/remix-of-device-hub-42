@@ -1,4 +1,4 @@
-import { Server, LogIn, LogOut, User } from "lucide-react";
+import { Server, LogIn, LogOut, User, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import AddDeviceDialog from "./AddDeviceDialog";
 import { useAuth } from "@/hooks/useAuth";
@@ -43,8 +43,18 @@ const Header = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {/* Show Add Device only for admins */}
-            {isAdmin && <AddDeviceDialog />}
+            {/* Show Add Device and User Management only for admins */}
+            {isAdmin && (
+              <>
+                <Link to="/admin/users">
+                  <Button variant="outline" size="sm">
+                    <Users className="w-4 h-4 mr-1" />
+                    <span className="hidden sm:inline">Users</span>
+                  </Button>
+                </Link>
+                <AddDeviceDialog />
+              </>
+            )}
             
             {/* Auth controls */}
             {!isLoading && (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -171,6 +171,16 @@ const Auth = () => {
                 ) : null}
                 {isSignUp ? "Sign Up" : "Sign In"}
               </Button>
+              {!isSignUp && (
+                <div className="text-center">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Forgot your password?
+                  </Link>
+                </div>
+              )}
             </form>
           </Form>
           <div className="mt-4 text-center">
