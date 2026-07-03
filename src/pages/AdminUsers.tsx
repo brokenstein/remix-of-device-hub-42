@@ -17,17 +17,22 @@ interface UserRow {
 }
 
 const AdminUsers = () => {
-  const { user, isAdmin, isLoading: authLoading } = useAuth();
+  const { user, isAdmin, isLoading: authLoading, isRoleLoading } = useAuth();
   const navigate = useNavigate();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) {
+    if (authLoading || isRoleLoading) return;
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    if (!isAdmin) {
       navigate("/");
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }, [user, isAdmin, authLoading, isRoleLoading, navigate]);
 
   const loadUsers = async () => {
     setIsLoading(true);
