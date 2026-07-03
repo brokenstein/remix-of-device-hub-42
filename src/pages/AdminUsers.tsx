@@ -177,7 +177,7 @@ const AdminUsers = () => {
         </Card>
 
         <div className="mt-6">
-          <Button variant="outline" onClick={() => navigate("/")}>
+          <Button variant="brightsign" onClick={() => navigate("/")}>
             Back to Devices
           </Button>
         </div>
